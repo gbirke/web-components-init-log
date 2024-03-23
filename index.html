@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Test page for web component initialization order</title>
+		<style>
+			my-component {
+				margin: .5em 0;
+				padding: .5em;
+				background: #AAAAFF;
+				display: block;
+			}
+		</style>
+		<script src="my-component.js"></script>
+		<script>
+			window.addEventListener("load", () => {
+				console.log("Main: loaded");
+				
+				console.time("first dynamic element")
+				const el1 = document.createElement('my-component');
+				console.log("Main: first my-component created")
+				el1.setAttribute('component-index', '1');
+				console.log("Main: first my-component set attribute finished")
+				document.getElementById('container').appendChild(el1);
+				console.log("Main: first my-component attached");
+				console.timeEnd("first dynamic element")
+
+
+				console.time("second dynamic element")
+				const el2 = document.createElement('my-component');
+				console.log("Main: second my-component created")
+				el2.setAttribute('component-index', '2');
+				console.log("Main: second my-component set attribute finished")
+				console.log("Main: Finished (second my-component not inserted in DOM)")
+				console.timeEnd("second dynamic element")
+			})
+		</script>
+	</head>
+	<body>
+		<h1>Test page for web component initialization order</h1>
+		<p>This is a small code scribble that demonstrates the order in which the
+		JavaScript runtime calls the different methods of Web Components.</p>
+		<p>Open your development console and look at the console log.</p>
+		<!-- Container for dynamically generated elements -->
+		<div id="container"></div>
+		<!--
+			Inline element, will be rendered first, because the "main" JavaScript
+			waits for the document to load 
+		-->
+		<my-component component-index="3"></my-component>
+	</body>
+</html>
